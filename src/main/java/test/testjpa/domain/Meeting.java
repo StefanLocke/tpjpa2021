@@ -8,10 +8,10 @@ import java.util.Date;
 
 @Entity
 public class Meeting {
-    public Meeting(Date date1, Student student, Teacher teacher) {
-        this.date1 = date1;
-        this.student = student;
-        this.teacher = teacher;
+    public Meeting(Pro pro,Date start, int duration) {
+        this.start = start;
+        this.pro = pro;
+        this.duration = duration;
     }
 
     public Meeting() {
@@ -19,11 +19,13 @@ public class Meeting {
 
     private long id;
 
-    private Date date1;
+    private Date start;
 
-    private Student student;
+    private int duration;
 
-    private Teacher teacher;
+    private User user;
+
+    private Pro pro;
 
     @Id
     @GeneratedValue
@@ -35,29 +37,37 @@ public class Meeting {
         this.id = id;
     }
 
-    public Date getDate1() {
-        return date1;
+    public int getDuration() {
+        return duration;
     }
 
-    public void setDate1(Date date) {
-        this.date1 = date;
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date date) {
+        this.start = date;
     }
 
     @OneToOne
-    public Student getStudent() {
-        return student;
+    public User getUser() {
+        return user;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @OneToOne
-    public Teacher getTeacher() {
-        return teacher;
+    public Pro getPro() {
+        return pro;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setPro(Pro pro) {
+        this.pro = pro;
     }
 }

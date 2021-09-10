@@ -1,21 +1,24 @@
 package test.testjpa.domain;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Teacher {
-    public Teacher() {
-    }
-    public Teacher(String name) {
+public class User {
+
+    public User(String name) {
         this.name = name;
+    }
+    public User() {
+
     }
 
     private long id;
 
     private String name;
+
+
 
     @Id
     @GeneratedValue
@@ -34,4 +37,6 @@ public class Teacher {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }
