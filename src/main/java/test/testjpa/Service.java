@@ -19,7 +19,7 @@ public class Service {
 
     public Service() {
         EntityManagerFactory factory =
-                Persistence.createEntityManagerFactory("dev");
+                Persistence.createEntityManagerFactory("mysqlhome");
         manager = factory.createEntityManager();
     }
 
@@ -33,34 +33,24 @@ public class Service {
         return dao.getAvailableTimeSlots(pro);
     }
 
-    public void cancelMeeting(long meetingId){
 
-    }
 
-    public List<User> getUsers(){
-        DAO dao = new DAO(manager);
-        return dao.getAllUsers();
-    }
-
-    public List<Pro> getPro(){
-        DAO dao = new DAO(manager);
-        return dao.getAllPros();
-    }
 
     /*** TEACHER ACTIONS ***/
-    public void proRegister(Pro pro) {
+    public void proRegister(String name) {
         DAO dao = new DAO(manager);
+        Pro pro = new Pro(name);
         dao.registerPro(pro);
     }
 
-    public Meeting addTimeSlot(Pro pro, Date start, int duration){
+    public Meeting addTimeSlot(long proId, Date start, int duration){
         DAO dao = new DAO(manager);
-        return dao.createTimeSlots(pro,start,duration);
+        return dao.createTimeSlots(dao.getProFromId(proId),start,duration);
     }
 
-    public void removeTimeSlot(Meeting meeting){
+    public void removeTimeSlot(long meetingId){
         DAO dao = new DAO(manager);
-        dao.removeTimeSlots(meeting);
+        dao.removeTimeSlots(dao.getMeetingFromId(meetingId));
     }
 
 
@@ -68,35 +58,26 @@ public class Service {
 
     /*** STUDENT ACTIONS ***/
 
-    public void userRegister(User user) {
+    public void userRegister(String name) {
         DAO dao = new DAO(manager);
+        User user = new User(name);
         dao.registerUser(user);
     }
 
-    public void requestMeeting(User user, Meeting meeting){
+    public void requestMeeting(long studentId, long meetingId){
         DAO dao = new DAO(manager);
-        dao.joinTimeSlot(user,meeting);
+        dao.joinTimeSlot(dao.getUserFromId(studentId),dao.getMeetingFromId(meetingId));
     }
 
-    public void cancelMeeting(String studentName,long meetingId){
-
+    public void cancelMeeting(long meetingId){
+        DAO dao = new DAO(manager);
+        Meeting meeting = dao.getMeetingFromId(meetingId);
+        meeting.setUser(null);
+        dao.update(meeting);
     }
 
 
 
-    public static void main(String[] args) {
 
-        Service service = new Service();
-        User user = new User("Steve");
-        Pro pro = new Pro("Bob Ross");
-        service.userRegister(user);
-        service.proRegister(pro);
-
-        Meeting meeting = service.addTimeSlot(pro,Date.from(Instant.now()),15);
-
-        service.requestMeeting(user,meeting);
-
-        System.out.println(".. done");
-    }
 
 }

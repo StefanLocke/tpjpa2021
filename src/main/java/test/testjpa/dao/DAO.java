@@ -29,7 +29,9 @@ public class DAO {
     }
 
     public void removeTimeSlots(Meeting meeting){
-
+        tx.begin();
+        manager.remove(meeting);
+        tx.commit();
     }
 
     public List<Meeting> getAvailableTimeSlots(Pro pro){
@@ -39,13 +41,16 @@ public class DAO {
 
     public void joinTimeSlot(User user, Meeting meeting){
         tx.begin();
-        Meeting meeting1 = (Meeting) manager.createQuery("Select a from Meeting a where a.id =\'"+meeting.getId()+"\'").getResultList().get(0);
+        Meeting meeting1 = manager.find(Meeting.class,meeting.getId());
         meeting1.setUser(user);
-        manager.persist(meeting1);
+        manager.merge(meeting1);
         tx.commit();
     }
     public void leaveTimeSlot(Meeting meeting){
-
+        tx.begin();
+        meeting.setUser(null);
+        manager.merge(meeting);
+        tx.commit();
     }
 
     public List<User> getAllUsers(){
@@ -57,6 +62,18 @@ public class DAO {
         List list = manager.createQuery("SELECT a from Pro a").getResultList();
         return list;
     }
+
+    public User getUserFromId(long id){
+        return manager.find(User.class,id);
+    }
+    public Pro getProFromId(long id){
+        return manager.find(Pro.class,id);
+    }
+    public Meeting getMeetingFromId(long id){
+        return manager.find(Meeting.class,id);
+    }
+
+
 
 
     /*** STUDENTS ***/
@@ -85,6 +102,26 @@ public class DAO {
     public boolean proExists(String name) {
         List list = manager.createQuery("Select a From Pro a Where a.name =\'" + name + "\'").getResultList();
         return list.size() > 0;
+    }
+
+
+
+    public void update(Object entity){
+        tx.begin();
+        manager.merge(entity);
+        tx.commit();
+    }
+
+    public void remove(Object entity) {
+        tx.begin();
+        manager.remove(entity);
+        tx.commit();
+    }
+
+    public void add(Object entity) {
+        tx.begin();
+        manager.persist(entity);
+        tx.commit();
     }
 
 
